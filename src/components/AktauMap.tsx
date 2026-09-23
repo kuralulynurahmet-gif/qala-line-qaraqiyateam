@@ -35,7 +35,7 @@ function FlyTo({ to }: { to?: [number, number] | null | undefined }) {
 }
 
 export default function AktauMap({
-  points = [], activeId, onSelect, picked, onPick, flyTo, showDistricts = true, className = "h-full w-full",
+  points = [], activeId, onSelect, picked, onPick, flyTo, showDistricts = false, className = "h-full w-full",
 }: {
   points?: MapPoint[] | undefined; activeId?: string | null | undefined; onSelect?: ((id: string) => void) | undefined;
   picked?: [number, number] | null | undefined; onPick?: ((lat: number, lng: number) => void) | undefined;
