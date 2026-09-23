@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/otinish")({
-  validateSearch: (s: Record<string, unknown>) => ({ category: typeof s.category === "string" ? s.category : undefined }),
+  validateSearch: (s: Record<string, unknown>) => z.object({ category: z.string().max(30).optional().catch(undefined) }).parse(s),
   head: () => ({
     meta: [
       { title: "Өтініш жіберу — QalaLine Ақтау" },
@@ -51,7 +51,7 @@ function SubmitPage() {
 
   async function onFile(file?: File) {
     if (!file) return;
-    if (!file.type.startsWith("image/")) return toast.error("Тек сурет файлын жүктеңіз");
+    if (!file.type.startsWith("image/")) { toast.error("Тек сурет файлын жүктеңіз"); return; }
     const data = await compressImage(file);
     setPhoto(data);
     runAi(data, f.category, point);
@@ -63,7 +63,7 @@ function SubmitPage() {
     finally { setChecking(false); }
   }
   function locate() {
-    if (!navigator.geolocation) return toast.error("Құрылғыңыз геолокацияны қолдамайды");
+    if (!navigator.geolocation) { toast.error("Құрылғыңыз геолокацияны қолдамайды"); return; }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -82,10 +82,10 @@ function SubmitPage() {
     const r = schema.safeParse(f);
     const errs: Record<string, string> = {};
     if (!r.success) r.error.issues.forEach((i) => (errs[String(i.path[0])] = i.message));
-    if (!point) errs.point = "Картадан нүктені таңдаңыз немесе GPS қолданыңыз";
-    if (!photo) errs.photo = "Мәселенің фотосын жүктеңіз";
+    if (!point) errs["point"] = "Картадан нүктені таңдаңыз немесе GPS қолданыңыз";
+    if (!photo) errs["photo"] = "Мәселенің фотосын жүктеңіз";
     setErrors(errs);
-    if (Object.keys(errs).length || !point) return toast.error("Форманы толық толтырыңыз");
+    if (Object.keys(errs).length || !point) { toast.error("Форманы толық толтырыңыз"); return; }
     if (ai && !ai.isIssue && !confirm("AI бұл фотода қалалық мәселе анықтамады. Бәрібір жібересіз бе?")) return;
     setSending(true);
     try {

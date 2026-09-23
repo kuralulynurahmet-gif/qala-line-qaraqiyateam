@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BakylauRouteImport } from './routes/bakylau'
+import { Route as KartaRouteImport } from './routes/karta'
+import { Route as OtinishRouteImport } from './routes/otinish'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BakylauRoute = BakylauRouteImport.update({
+  id: '/bakylau',
+  path: '/bakylau',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KartaRoute = KartaRouteImport.update({
+  id: '/karta',
+  path: '/karta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OtinishRoute = OtinishRouteImport.update({
+  id: '/otinish',
+  path: '/otinish',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/bakylau': typeof BakylauRoute
+  '/karta': typeof KartaRoute
+  '/otinish': typeof OtinishRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/bakylau': typeof BakylauRoute
+  '/karta': typeof KartaRoute
+  '/otinish': typeof OtinishRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/bakylau': typeof BakylauRoute
+  '/karta': typeof KartaRoute
+  '/otinish': typeof OtinishRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/admin' | '/bakylau' | '/karta' | '/otinish'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/admin' | '/bakylau' | '/karta' | '/otinish'
+  id: '__root__' | '/' | '/admin' | '/bakylau' | '/karta' | '/otinish'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  BakylauRoute: typeof BakylauRoute
+  KartaRoute: typeof KartaRoute
+  OtinishRoute: typeof OtinishRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +88,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bakylau': {
+      id: '/bakylau'
+      path: '/bakylau'
+      fullPath: '/bakylau'
+      preLoaderRoute: typeof BakylauRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/karta': {
+      id: '/karta'
+      path: '/karta'
+      fullPath: '/karta'
+      preLoaderRoute: typeof KartaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/otinish': {
+      id: '/otinish'
+      path: '/otinish'
+      fullPath: '/otinish'
+      preLoaderRoute: typeof OtinishRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  BakylauRoute: BakylauRoute,
+  KartaRoute: KartaRoute,
+  OtinishRoute: OtinishRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

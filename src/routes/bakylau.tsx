@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -7,7 +8,7 @@ import { catById, districtLabel, fmtDate, STATUSES } from "@/lib/aktau";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export const Route = createFileRoute("/bakylau")({
-  validateSearch: (s: Record<string, unknown>) => ({ code: typeof s.code === "string" ? s.code : undefined }),
+  validateSearch: (s: Record<string, unknown>) => z.object({ code: z.string().max(30).optional().catch(undefined) }).parse(s),
   head: () => ({
     meta: [
       { title: "Өтінішті бақылау — QalaLine Ақтау" },
