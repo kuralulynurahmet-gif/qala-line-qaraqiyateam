@@ -50,7 +50,7 @@ export const aiCheckPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { distanceM } = await import("./reports.server");
     let isIssue = true, reason = "", suggested = data.category;
-    const key = process.env.LOVABLE_API_KEY;
+    const key = process.env['LOVABLE_API_KEY'];
     if (key) {
       try {
         const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -159,7 +159,7 @@ export const adminUpdateReport = createServerFn({ method: "POST" })
     const { assertAdmin } = await import("./reports.server");
     assertAdmin(data.u, data.p);
     const db = await admin();
-    const patch: Record<string, unknown> = { status: data.status, staff_comment: data.staff_comment, updated_at: new Date().toISOString() };
+    const patch: { status: string; staff_comment: string; updated_at: string; resolved_photo_url?: string } = { status: data.status, staff_comment: data.staff_comment, updated_at: new Date().toISOString() };
     if (data.resolved_photo) patch.resolved_photo_url = data.resolved_photo;
     const { error } = await db.from("reports").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
