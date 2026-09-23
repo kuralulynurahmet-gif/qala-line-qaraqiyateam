@@ -24,11 +24,11 @@ const pickIcon = L.divIcon({
   html: `<div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#0e3b52;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,.35)"></div>`,
 });
 
-function ClickPicker({ onPick }: { onPick?: (lat: number, lng: number) => void }) {
+function ClickPicker({ onPick }: { onPick?: ((lat: number, lng: number) => void) | undefined }) {
   useMapEvents({ click: (e) => onPick?.(e.latlng.lat, e.latlng.lng) });
   return null;
 }
-function FlyTo({ to }: { to?: [number, number] | null }) {
+function FlyTo({ to }: { to?: [number, number] | null | undefined }) {
   const map = useMap();
   useEffect(() => { if (to) map.flyTo(to, Math.max(map.getZoom(), 15), { duration: 0.6 }); }, [to, map]);
   return null;
@@ -37,9 +37,9 @@ function FlyTo({ to }: { to?: [number, number] | null }) {
 export default function AktauMap({
   points = [], activeId, onSelect, picked, onPick, flyTo, showDistricts = true, className = "h-full w-full",
 }: {
-  points?: MapPoint[]; activeId?: string | null; onSelect?: (id: string) => void;
-  picked?: [number, number] | null; onPick?: (lat: number, lng: number) => void;
-  flyTo?: [number, number] | null; showDistricts?: boolean; className?: string;
+  points?: MapPoint[] | undefined; activeId?: string | null | undefined; onSelect?: ((id: string) => void) | undefined;
+  picked?: [number, number] | null | undefined; onPick?: ((lat: number, lng: number) => void) | undefined;
+  flyTo?: [number, number] | null | undefined; showDistricts?: boolean | undefined; className?: string | undefined;
 }) {
   return (
     <MapContainer center={AKTAU_CENTER} zoom={13} minZoom={11} maxBounds={[[43.55, 50.95], [43.8, 51.45]]} className={className} scrollWheelZoom>
