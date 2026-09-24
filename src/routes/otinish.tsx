@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Camera, Crosshair, Loader2, Sparkles, CheckCircle2, AlertTriangle, Copy } from "lucide-react";
+import { Camera, Crosshair, Loader2, Sparkles, CheckCircle2, AlertTriangle, Copy, ArrowLeft } from "lucide-react";
 import { CATEGORIES, DISTRICTS, districtCenter, catById } from "@/lib/aktau";
 import { compressImage } from "@/lib/image";
 import { aiCheckPhoto, createReport } from "@/lib/reports.functions";
@@ -89,7 +89,7 @@ function SubmitPage() {
     if (ai && !ai.isIssue && !confirm("AI бұл фотода қалалық мәселе анықтамады. Бәрібір жібересіз бе?")) return;
     setSending(true);
     try {
-      const res = await createReport({ data: { ...f, photo, lat: point[0], lng: point[1], ai_note: ai ? `${ai.isIssue ? "✔" : "✖"} ${ai.reason}`.slice(0, 300) : undefined } });
+      const res = await createReport({ data: { ...f, photo, lat: point[0], lng: point[1] } });
       setDone(res.code);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) { toast.error(err instanceof Error ? err.message : "Жіберу сәтсіз"); }
@@ -119,7 +119,8 @@ function SubmitPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-2xl font-bold sm:text-3xl">Өтініш жіберу</h1>
+      <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /> Артқа қайту</Link>
+      <h1 className="mt-3 text-2xl font-bold sm:text-3xl">Өтініш жіберу</h1>
       <p className="mt-2 text-muted-foreground">Ақтау қаласындағы мәселе туралы хабарлаңыз — барлық өріс міндетті.</p>
 
       <form onSubmit={submit} className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -133,7 +134,7 @@ function SubmitPage() {
             <div>
               <Label>Шағынаудан</Label>
               <select className="mt-1.5 h-9 w-full rounded-md border bg-transparent px-3 text-sm" value={f.microdistrict}
-                onChange={(e) => { set("microdistrict", e.target.value); if (e.target.value) { const c = districtCenter(e.target.value); setFly(c); if (!point) setPoint(c); } }}>
+                onChange={(e) => { set("microdistrict", e.target.value); if (e.target.value) setFly(districtCenter(e.target.value)); }}>
                 <option value="">— таңдаңыз —</option>
                 <optgroup label="Шағынаудандар">{DISTRICTS.filter((d) => /^\d+$/.test(d.id)).map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}</optgroup>
                 <optgroup label="Жаңа шағынаудандар">{DISTRICTS.filter((d) => !/^\d+$/.test(d.id)).map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}</optgroup>
