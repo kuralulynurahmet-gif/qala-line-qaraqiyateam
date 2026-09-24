@@ -14,6 +14,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BakylauRouteImport } from './routes/bakylau'
 import { Route as KartaRouteImport } from './routes/karta'
 import { Route as OtinishRouteImport } from './routes/otinish'
+import { Route as VolonterRouteImport } from './routes/volonter'
+import { Route as AlgysIdRouteImport } from './routes/algys.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +42,16 @@ const OtinishRoute = OtinishRouteImport.update({
   path: '/otinish',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VolonterRoute = VolonterRouteImport.update({
+  id: '/volonter',
+  path: '/volonter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlgysIdRoute = AlgysIdRouteImport.update({
+  id: '/algys/$id',
+  path: '/algys/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +59,8 @@ export interface FileRoutesByFullPath {
   '/bakylau': typeof BakylauRoute
   '/karta': typeof KartaRoute
   '/otinish': typeof OtinishRoute
+  '/volonter': typeof VolonterRoute
+  '/algys/$id': typeof AlgysIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +68,8 @@ export interface FileRoutesByTo {
   '/bakylau': typeof BakylauRoute
   '/karta': typeof KartaRoute
   '/otinish': typeof OtinishRoute
+  '/volonter': typeof VolonterRoute
+  '/algys/$id': typeof AlgysIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +78,37 @@ export interface FileRoutesById {
   '/bakylau': typeof BakylauRoute
   '/karta': typeof KartaRoute
   '/otinish': typeof OtinishRoute
+  '/volonter': typeof VolonterRoute
+  '/algys/$id': typeof AlgysIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/bakylau' | '/karta' | '/otinish'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/bakylau'
+    | '/karta'
+    | '/otinish'
+    | '/volonter'
+    | '/algys/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/bakylau' | '/karta' | '/otinish'
-  id: '__root__' | '/' | '/admin' | '/bakylau' | '/karta' | '/otinish'
+  to:
+    | '/'
+    | '/admin'
+    | '/bakylau'
+    | '/karta'
+    | '/otinish'
+    | '/volonter'
+    | '/algys/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/bakylau'
+    | '/karta'
+    | '/otinish'
+    | '/volonter'
+    | '/algys/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +117,8 @@ export interface RootRouteChildren {
   BakylauRoute: typeof BakylauRoute
   KartaRoute: typeof KartaRoute
   OtinishRoute: typeof OtinishRoute
+  VolonterRoute: typeof VolonterRoute
+  AlgysIdRoute: typeof AlgysIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +158,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OtinishRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/volonter': {
+      id: '/volonter'
+      path: '/volonter'
+      fullPath: '/volonter'
+      preLoaderRoute: typeof VolonterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/algys/$id': {
+      id: '/algys/$id'
+      path: '/algys/$id'
+      fullPath: '/algys/$id'
+      preLoaderRoute: typeof AlgysIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +181,8 @@ const rootRouteChildren: RootRouteChildren = {
   BakylauRoute: BakylauRoute,
   KartaRoute: KartaRoute,
   OtinishRoute: OtinishRoute,
+  VolonterRoute: VolonterRoute,
+  AlgysIdRoute: AlgysIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
