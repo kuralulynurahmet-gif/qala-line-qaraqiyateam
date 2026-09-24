@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Search, Loader2, Calendar, MapPin, Tag, MessageSquare } from "lucide-react";
+import { Search, Loader2, Calendar, MapPin, Tag, MessageSquare, ArrowLeft } from "lucide-react";
 import { trackReport } from "@/lib/reports.functions";
 import { catById, districtLabel, fmtDate, STATUSES } from "@/lib/aktau";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -36,7 +36,8 @@ function TrackPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold sm:text-3xl">Өтінішті бақылау</h1>
+      <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /> Артқа қайту</Link>
+      <h1 className="mt-3 text-2xl font-bold sm:text-3xl">Өтінішті бақылау</h1>
       <p className="mt-2 text-muted-foreground">Өтініш нөмірін енгізіңіз (мысалы, #AKT-2026-1042 немесе 1042).</p>
       <form onSubmit={(e) => { e.preventDefault(); if (q.trim()) nav({ search: { code: q.trim() } }); }} className="mt-6 flex gap-2">
         <div className="relative flex-1">

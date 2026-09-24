@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, LogOut, MessageCircle, Upload, Phone, Search } from "lucide-react";
+import { Loader2, LogOut, MessageCircle, Upload, Phone, Search, ArrowLeft } from "lucide-react";
 import { adminListReports, adminLogin, adminUpdateReport, getReportPhotos, type AdminReport } from "@/lib/reports.functions";
 import { CATEGORIES, STATUSES, catById, districtLabel, fmtDate, statusById } from "@/lib/aktau";
 import { compressImage } from "@/lib/image";
@@ -69,7 +69,8 @@ function Dashboard({ cred, onLogout }: { cred: Cred; onLogout: () => void }) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="flex items-center justify-between">
+      <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /> Басты бетке оралу</Link>
+      <div className="mt-3 flex items-center justify-between">
         <div><h1 className="text-2xl font-bold">Әкімдік бөлімі</h1><p className="text-sm text-muted-foreground">Өтініштерді басқару панелі</p></div>
         <button onClick={onLogout} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm"><LogOut className="h-4 w-4" /> Шығу</button>
       </div>
@@ -147,7 +148,6 @@ function Editor({ r, cred, onSaved }: { r: AdminReport; cred: Cred; onSaved: () 
           <p className="font-display font-bold">{r.code}</p>
           <p className="text-sm">{catById(r.category).icon} {catById(r.category).label} · {districtLabel(r.microdistrict)}, {r.address}</p>
           <p className="mt-2 text-sm text-muted-foreground">{r.description}</p>
-          {r.ai_note && <p className="mt-2 rounded-lg bg-muted p-2 text-xs">AI: {r.ai_note}</p>}
           <p className="mt-2 flex items-center gap-2 text-sm"><Phone className="h-4 w-4" /> {r.full_name} · <a href={`tel:${r.phone}`} className="text-primary">{r.phone}</a></p>
         </div>
         <div>
