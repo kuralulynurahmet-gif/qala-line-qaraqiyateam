@@ -7,6 +7,7 @@ const NAV = [
   { to: "/otinish", label: "Өтініш жіберу" },
   { to: "/bakylau", label: "Бақылау" },
   { to: "/karta", label: "Ақтау картасы" },
+  { to: "/volonter", label: "ЖК волонтер" },
   { to: "/admin", label: "Әкімдік" },
 ] as const;
 

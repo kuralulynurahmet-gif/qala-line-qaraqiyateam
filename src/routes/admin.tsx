@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, LogOut, MessageCircle, Upload, Phone, Search, ArrowLeft } from "lucide-react";
+import { Loader2, LogOut, MessageCircle, Upload, Phone, Search, ArrowLeft, Award } from "lucide-react";
 import { adminListReports, adminLogin, adminUpdateReport, getReportPhotos, type AdminReport } from "@/lib/reports.functions";
+import { adminListVolunteers, adminThankVolunteer } from "@/lib/volunteers.functions";
 import { CATEGORIES, STATUSES, catById, districtLabel, fmtDate, statusById } from "@/lib/aktau";
 import { compressImage } from "@/lib/image";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -118,7 +119,60 @@ function Dashboard({ cred, onLogout }: { cred: Cred; onLogout: () => void }) {
             : <div className="rounded-2xl border border-dashed p-10 text-center text-sm text-muted-foreground">Өңдеу үшін тізімнен өтінішті таңдаңыз</div>}
         </div>
       </div>
+      <VolunteersPanel cred={cred} />
     </div>
+  );
+}
+
+function VolunteersPanel({ cred }: { cred: Cred }) {
+  const qc = useQueryClient();
+  const { data = [], isLoading } = useQuery({ queryKey: ["admin-volunteers"], queryFn: () => adminListVolunteers({ data: cred }) });
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  return (
+    <section className="mt-10">
+      <h2 className="text-xl font-bold">ЖК волонтерлер ({data.length})</h2>
+      <p className="text-sm text-muted-foreground">Көмек көрсеткен кәсіпкерлерге әкімдік атынан алғыс хат беріңіз</p>
+      <div className="mt-4 overflow-hidden rounded-2xl border bg-card">
+        {isLoading ? <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin" /></div> : data.length === 0 ? <p className="p-8 text-center text-muted-foreground">Әзірге тіркелген волонтер жоқ</p> : (
+          <ul className="divide-y">
+            {data.map((v) => (
+              <li key={v.id} className="p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-semibold">{v.company_name} <span className="font-normal text-muted-foreground">· {v.full_name}</span></p>
+                    <p className="text-xs text-muted-foreground">ЖСН/БСН {v.iin} · {v.phone} · {v.activity}{v.microdistrict ? ` · ${districtLabel(v.microdistrict)}` : ""} · {fmtDate(v.created_at)}</p>
+                    <p className="mt-1 text-sm">{v.help_description}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <a href={`https://wa.me/${v.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm"><MessageCircle className="h-4 w-4" /> WhatsApp</a>
+                    {v.thanked ? (
+                      <Link to="/algys/$id" params={{ id: v.id }} target="_blank" className="inline-flex items-center gap-1 rounded-lg bg-status-done px-3 py-1.5 text-sm font-semibold text-primary-foreground"><Award className="h-4 w-4" /> Алғыс хатты ашу</Link>
+                    ) : (
+                      <button onClick={() => { setOpenId(v.id); setText(`${v.company_name} ұжымына Ақтау қаласын абаттандыруға қосқан елеулі үлесі мен көрсеткен волонтерлік көмегі үшін шын жүректен алғыс білдіреміз. Сіздің азаматтық белсенділігіңіз — қаламыздың дамуына қосылған зор үлес!`); }} className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground"><Award className="h-4 w-4" /> Алғыс хат беру</button>
+                    )}
+                  </div>
+                </div>
+                {openId === v.id && (
+                  <div className="mt-3 space-y-2 rounded-xl bg-muted/60 p-3">
+                    <Textarea rows={4} value={text} onChange={(e) => setText(e.target.value)} />
+                    <div className="flex gap-2">
+                      <button disabled={busy} onClick={async () => {
+                        setBusy(true);
+                        try { await adminThankVolunteer({ data: { ...cred, id: v.id, text } }); toast.success("Алғыс хат берілді"); setOpenId(null); qc.invalidateQueries({ queryKey: ["admin-volunteers"] }); }
+                        catch { toast.error("Сақтау сәтсіз"); } finally { setBusy(false); }
+                      }} className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">{busy && <Loader2 className="h-4 w-4 animate-spin" />}Растау</button>
+                      <button onClick={() => setOpenId(null)} className="rounded-lg border px-3 py-1.5 text-sm">Бас тарту</button>
+                    </div>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
   );
 }
 
